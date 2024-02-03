@@ -106,7 +106,7 @@ passport.use(
     {
       clientID: process.env.CLIENT_ID,
       clientSecret: process.env.CLIENT_SECRET,
-      callbackURL: "https://post-o-blog.herokuapp.com/auth/google/callback",
+      callbackURL: "http://localhost:3000/auth/google/callback",
       userProfileURL: "https://www.googleapis.com/oauth2/v3/userinfo",
     },
     function (accessToken, refreshToken, profile, cb) {
@@ -129,6 +129,18 @@ passport.use(
 //get Home
 app.get("/", (req, res) => {
   Post.find((err, posts) => {
+    if (err) {
+      console.error(err);
+      res.send("There was an error fetching posts.");
+      return;
+    }
+
+    if (!posts) {
+      console.error("Posts are undefined.");
+      res.send("Posts are undefined.");
+      return;
+    }
+
     posts.sort((a, b) => {
       return new Date(b.timestamp) - new Date(a.timestamp);
     });
